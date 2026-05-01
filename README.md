@@ -1,106 +1,180 @@
-# HEAD
+# 🤯 HEAD
 
-[![CC0](https://img.shields.io/badge/license-CC0-green.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
-[![Contributors](https://img.shields.io/github/contributors/joshbuchea/head.svg)](https://github.com/joshbuchea/HEAD/graphs/contributors)
+> A simple guide to HTML `<head>` elements
 
-A list of everything that \*could\* go in the `<head>` of your document
+[![Contributors](https://img.shields.io/github/contributors/joshbuchea/head.svg?style=for-the-badge)](https://github.com/joshbuchea/HEAD/graphs/contributors)
+[![CC0](https://img.shields.io/badge/license-CC0-green.svg?style=for-the-badge)](https://creativecommons.org/publicdomain/zero/1.0/)
+[![Follow @joshbuchea on Mastodon](https://img.shields.io/badge/Follow_@joshbuchea-purple?logo=mastodon&logoColor=white&style=for-the-badge)](https://hachyderm.io/@joshbuchea)
 
 ## Table of Contents
 
 - [Recommended Minimum](#recommended-minimum)
 - [Elements](#elements)
+- [Recommended Order](#recommended-order)
 - [Meta](#meta)
 - [Link](#link)
-- [Favicons](#favicons)
+- [Scripts](#scripts)
+- [Icons](#icons)
 - [Social](#social)
-  - [Facebook Open Graph](#facebook-open-graph)
-  - [Twitter Card](#twitter-card)
-  - [Google+ / Schema.org](#google--schemaorg)
-  - [Facebook Instant Articles](#facebook-instant-articles)
+  - [Open Graph](#open-graph)
+  - [Schema.org](#schemaorg)
+  - [Google JSON-LD Schema](#google-json-ld-schema)
+  - [Pinterest](#pinterest)
   - [OEmbed](#oembed)
+  - [QQ/Wechat](#qqwechat)
+  - [Dublin Core](#dublin-core)
 - [Browsers / Platforms](#browsers--platforms)
   - [Apple iOS](#apple-ios)
-  - [Apple Safari](#apple-safari)
   - [Google Android](#google-android)
   - [Google Chrome](#google-chrome)
-  - [Microsoft Internet Explorer](#microsoft-internet-explorer)
 - [Browsers (Chinese)](#browsers-chinese)
   - [360 Browser](#360-browser)
   - [QQ Mobile Browser](#qq-mobile-browser)
   - [UC Mobile Browser](#uc-mobile-browser)
 - [App Links](#app-links)
-- [Notes](#notes)
-  - [Performance](#performance)
+- [Deprecated](#deprecated)
 - [Other Resources](#other-resources)
 - [Related Projects](#related-projects)
 - [Other Formats](#other-formats)
-- [Translations](#translations)
-- [Contributing](#contributing)
+- [Translations](#-translations)
+- [Contributing](#-contributing)
   - [Contributors](#contributors)
-- [Author](#author)
-- [License](#license)
+- [Author](#-author)
+- [License](#-license)
 
 ## Recommended Minimum
 
-Below are the essential tags for basic, minimalist websites:
+Below are the essential elements for any web document (websites/apps):
 
 ```html
 <meta charset="utf-8">
-<meta http-equiv="x-ua-compatible" content="ie=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  The above 2 meta tags should come as early as possible in the <head>
+  to consistently ensure proper document rendering.
+  Any other head element should come *after* these tags.
+-->
 <title>Page Title</title>
 ```
 
-**[⬆ back to top](#table-of-contents)**
+`meta charset` - defines the encoding of the website, `utf-8` is the standard
+
+`meta name="viewport"` - viewport settings related to mobile responsiveness
+
+`width=device-width` - use the physical width of the device (great for mobile!)
+
+`initial-scale=1` - the initial zoom, 1 means no zoom
 
 ## Elements
 
 Valid `<head>` elements include `meta`, `link`, `title`, `style`, `script`, `noscript`, and `base`.
 
-``` html
-<!-- Charset -->
+These elements provide information for how a document should be perceived, and rendered, by web technologies. e.g. browsers, search engines, bots, etc.
+
+```html
+<!--
+  Set the character encoding for this document, so that
+  all characters within the UTF-8 space (such as emoji)
+  are rendered correctly.
+-->
 <meta charset="utf-8">
 
-<!-- Document Title -->
+<!-- Set the document's title -->
 <title>Page Title</title>
 
-<!-- Base URL to use for all relative URLs contained within the document -->
-<base href="http://example.com/page.html">
+<!-- Set the base URL for all relative URLs within the document -->
+<base href="https://example.com/page.html">
 
-<!-- External CSS -->
+<!-- Link to an external CSS file -->
 <link rel="stylesheet" href="styles.css">
 
-<!-- In-document CSS -->
+<!-- Used for adding in-document CSS -->
 <style>
   /* ... */
 </style>
 
-<!-- JavaScript -->
+<!-- JavaScript & No-JavaScript tags -->
 <script src="script.js"></script>
-<noscript><!--no JS alternative--></noscript>
+<script>
+  // function(s) go here
+</script>
+<noscript>
+  <!-- No JS alternative -->
+</noscript>
 ```
 
-**[⬆ back to top](#table-of-contents)**
+## Recommended Order
+
+The following is the recommended order of elements in the `<head>` for best performance and correct document rendering:
+
+1. `<meta charset>` — Character encoding declaration; **must** appear within the first 1024 bytes of the document
+2. `<meta name="viewport">` — Viewport settings; declare early to ensure correct responsive rendering
+3. `<title>` — Document title; placed after encoding/viewport to prevent potential re-rendering
+4. Other `<meta>` tags (description, robots, etc.)
+5. Open Graph / Social meta tags
+6. `<link rel="canonical">` and other `<link>` tags (excluding stylesheets and resource hints)
+7. `<link rel="preconnect">` / `<link rel="dns-prefetch">` — Resource hints; early to maximize their value
+8. `<link rel="stylesheet">` — External CSS; stylesheets should come before scripts
+9. `<link rel="icon">` — Favicons
+10. `<script>` — Scripts; use `defer` or `async` where possible to avoid blocking rendering
+
+```html
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Page Title</title>
+
+  <meta name="description" content="Page description">
+  <!-- other meta tags -->
+
+  <!-- Open Graph / Social meta tags -->
+  <meta property="og:title" content="Page Title">
+  <!-- other social meta tags -->
+
+  <link rel="canonical" href="https://example.com/page.html">
+  <!-- other link tags (excluding stylesheets and resource hints) -->
+
+  <link rel="preconnect" href="https://example.com">
+  <link rel="dns-prefetch" href="https://example.com">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <link rel="icon" href="favicon.ico">
+
+  <script defer src="script.js"></script>
+</head>
+```
 
 ## Meta
 
-``` html
-<meta charset="utf-8"> <!-- set character encoding for the document -->
-<meta http-equiv="x-ua-compatible" content="ie=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+```html
+<!--
+  The following 2 meta tags should come as early as possible in the <head>
+  to consistently ensure proper document rendering.
+  Any other head element should come *after* these tags.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Allows control over where resources are loaded from -->
+<!--
+  Allows control over where resources are loaded from.
+  Place as early in the <head> as possible, as the tag
+  only applies to resources that are declared after it.
+-->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
-<!-- Place as early in the document as possible -->
-<!-- Only applies to content below this tag -->
 
 <!-- Name of web application (only should be used if the website is used as an app) -->
 <meta name="application-name" content="Application Name">
 
-<!-- Short description of the page (limit to 150 characters) -->
-<!-- In *some* situations this description is used as a part of the snippet shown in the search results. -->
+<!-- Theme Color for Chrome, Firefox OS and Opera -->
+<meta name="theme-color" content="#4285f4">
+
+<!-- Indicates the supported color schemes for the page (light, dark, or both) -->
+<meta name="color-scheme" content="light dark">
+
+<!-- Short description of the document (limit to 150 characters) -->
+<!-- This content *may* be used as a part of search engine results. -->
 <meta name="description" content="A description of the page">
 
 <!-- Control the behavior of search engine crawling and indexing -->
@@ -110,24 +184,23 @@ Valid `<head>` elements include `meta`, `link`, `title`, `style`, `script`, `nos
 <!-- Tells Google not to show the sitelinks search box -->
 <meta name="google" content="nositelinkssearchbox">
 
-<!-- Tells Google not to provide a translation for this page -->
+<!-- Tells Google not to provide a translation for this document -->
 <meta name="google" content="notranslate">
 
-<!-- Verify ownership -->
+<!-- Verify website ownership -->
 <meta name="google-site-verification" content="verification_token"><!-- Google Search Console -->
 <meta name="yandex-verification" content="verification_token"><!-- Yandex Webmasters -->
 <meta name="msvalidate.01" content="verification_token"><!-- Bing Webmaster Center -->
-<meta name="alexaVerifyID" content="verification_token"><!-- Alexa Console -->
 <meta name="p:domain_verify" content="code_from_pinterest"><!-- Pinterest Console-->
 <meta name="norton-safeweb-site-verification" content="norton_code"><!-- Norton Safe Web -->
 
-<!-- Used to name software used to build the website (i.e. - WordPress, Dreamweaver) -->
+<!-- Identify the software used to build the document (i.e. - WordPress, Dreamweaver) -->
 <meta name="generator" content="program">
 
-<!-- Short description of your site's subject -->
-<meta name="subject" content="your website's subject">
+<!-- Short description of your document's subject -->
+<meta name="subject" content="your document's subject">
 
-<!-- Gives a general age rating based on sites content -->
+<!-- Gives a general age rating based on the document's content -->
 <meta name="rating" content="General">
 
 <!-- Allows control over how referrer information is passed -->
@@ -136,248 +209,313 @@ Valid `<head>` elements include `meta`, `link`, `title`, `style`, `script`, `nos
 <!-- Disable automatic detection and formatting of possible phone numbers -->
 <meta name="format-detection" content="telephone=no">
 
-<!-- Completely opt out of DNS prefetching by setting to 'off' -->
-<meta http-equiv="x-dns-prefetch-control" content="off">
-
-<!-- Stores cookie on the client web browser for client identification -->
-<meta http-equiv="set-cookie" content="name=value; expires=date; path=url">
-
-<!-- Specifies the page to appear in a specific frame -->
-<meta http-equiv="Window-Target" content="_value">
-
 <!-- Geo tags -->
-<meta name="ICBM" content="latitude, longitude">
-<meta name="geo.position" content="latitude;longitude">
+<meta name="ICBM" content="latitude, longitude"><!-- Geographic coordinates (latitude, longitude) in decimal degrees; eg. content="48.8566, 2.3522" -->
+<meta name="geo.position" content="latitude;longitude"><!-- Geographic coordinates; latitude and longitude are separated by a semicolon -->
 <meta name="geo.region" content="country[-state]"><!-- Country code (ISO 3166-1): mandatory, state code (ISO 3166-2): optional; eg. content="US" / content="US-NY" -->
 <meta name="geo.placename" content="city/town"><!-- eg. content="New York City" -->
+
+<!-- Web Monetization https://webmonetization.org/docs/getting-started -->
+<meta name="monetization" content="$paymentpointer.example">
 ```
+
+**Note:** Geo tags are **not** used by browsers directly — they are intended for search engines, web crawlers, and location-based services to understand the geographic relevance of a page's content. `ICBM` (named after the military ICBM address convention) and `geo.position` both express coordinates in decimal degrees; `ICBM` uses a comma separator while `geo.position` uses a semicolon. `geo.region` identifies the country (and optionally the state/region) using ISO codes, and `geo.placename` provides a human-readable place name.
 
 - 📖 [Meta tags that Google understands](https://support.google.com/webmasters/answer/79812?hl=en)
 - 📖 [WHATWG Wiki: MetaExtensions](https://wiki.whatwg.org/wiki/MetaExtensions)
 - 📖 [ICBM on Wikipedia](https://en.wikipedia.org/wiki/ICBM_address#Modern_use)
 - 📖 [Geotagging on Wikipedia](https://en.wikipedia.org/wiki/Geotagging#HTML_pages)
 
-**[⬆ back to top](#table-of-contents)**
-
 ## Link
 
-``` html
-<!-- Points to a CSS stylesheet -->
-<link rel="stylesheet" href="http://example.com/styles.css">
+```html
+<!-- Points to an external stylesheet -->
+<link rel="stylesheet" href="https://example.com/styles.css">
 
 <!-- Helps prevent duplicate content issues -->
-<link rel="canonical" href="http://example.com/2010/06/9-things-to-do-before-entering-social-media.html">
+<link rel="canonical" href="https://example.com/article/?page=2">
 
-<!-- Used to be included before the icon link, but is deprecated and no longer is used -->
-<link rel="shortlink" href="http://example.com/?p=42">
-
-<!-- Links to an AMP HTML version of the current document -->
-<link rel="amphtml" href="http://example.com/path/to/amp-version.html">
-
-<!-- Links to a JSON file that specifies "installation" credentials for web applications -->
+<!-- Links to a Web App Manifest — the recommended way to define PWA metadata such as app name, icons, theme_color, and display mode -->
 <link rel="manifest" href="manifest.json">
 
-<!-- Links to the author of the document -->
+<!-- Links to information about the author(s) of the document -->
 <link rel="author" href="humans.txt">
 
-<!-- Refers to a copyright statement that applies to the links context -->
+<!-- Refers to a copyright statement that applies to the link's context -->
 <link rel="license" href="copyright.html">
 
 <!-- Gives a reference to a location in your document that may be in another language -->
 <link rel="alternate" href="https://es.example.com/" hreflang="es">
 
-<!-- Gives information about an author or another person -->
+<!-- Provides information about an author or another person
+     Used for RelMeAuth, a distributed form of identity verification.
+     See https://microformats.org/wiki/RelMeAuth to learn more -->
 <link rel="me" href="https://google.com/profiles/thenextweb" type="text/html">
 <link rel="me" href="mailto:name@example.com">
 <link rel="me" href="sms:+15035550125">
 
-<!-- Links to a document that describes a collection of records, documents, or other materials of historical interest. -->
-<link rel="archives" href="http://example.com/archives/">
+<!-- Provides a self reference - useful when the document has multiple possible references -->
+<link rel="self" type="application/atom+xml" href="https://example.com/atom.xml">
 
-<!-- Links to top level resource in an hierarchical structure -->
-<link rel="index" href="http://example.com/">
+<!-- The previous, and next documents in a series of documents, respectively -->
+<link rel="prev" href="https://example.com/article/?page=1">
+<link rel="next" href="https://example.com/article/?page=3">
 
-<!-- Gives a self reference - useful when the document has multiple possible references -->
-<link rel="self" type="application/atom+xml" href="http://example.com/atomFeed.php?page=3">
+<!-- Notifies a URL when you link to it on your document
+     More information at https://webmention.net -->
+<link rel="webmention" href="https://example.com/webmention">
 
-<!-- The first, next, previous, and last documents in a series of documents, respectively -->
-<link rel="first" href="http://example.com/atomFeed.php">
-<link rel="next" href="http://example.com/atomFeed.php?page=4">
-<link rel="prev" href="http://example.com/atomFeed.php?page=2">
-<link rel="last" href="http://example.com/atomFeed.php?page=147">
+<!-- Enables posting to your own domain using a Micropub client 
+     More information at https://indieweb.org/Micropub -->
+<link rel="micropub" href="https://example.com/micropub">
 
-<!-- Used when using a 3rd party service to maintain a blog -->
-<link rel="EditURI" href="http://example.com/xmlrpc.php?rsd" type="application/rsd+xml" title="RSD">
-
-<!-- Forms an automated comment when another WordPress blog links to your WordPress blog or post -->
-<link rel="pingback" href="http://example.com/xmlrpc.php">
-
-<!-- Notifies a url when you link to it on your site -->
-<link rel="webmention" href="http://example.com/webmention">
-
-<!-- Enables posting to your own domain using a Micropub client -->
-<link rel="micropub" href="http://example.com/micropub">
-
-<!-- Loads in an external HTML file into the current HTML file -->
-<link rel="import" href="/path/to/component.html">
+<!-- Enables you to use your site with IndieAuth, an identity solution that
+     lets you authenticate with your domain name.
+     Read more at https://indieauth.net. -->
+<link rel="token_endpoint" href="https://example.com/token">
+<link rel="authorization_endpoint" href="https://example.com/auth">
 
 <!-- Open Search -->
 <link rel="search" href="/open-search.xml" type="application/opensearchdescription+xml" title="Search Title">
 
 <!-- Feeds -->
 <link rel="alternate" href="https://feeds.feedburner.com/example" type="application/rss+xml" title="RSS">
-<link rel="alternate" href="http://example.com/feed.atom" type="application/atom+xml" title="Atom 0.3">
+<link rel="alternate" href="https://example.com/feed.atom" type="application/atom+xml" title="Atom 0.3">
 
 <!-- Prefetching, preloading, prebrowsing -->
+<!-- More info: https://css-tricks.com/prefetching-preloading-prebrowsing/ -->
 <link rel="dns-prefetch" href="//example.com/">
 <link rel="preconnect" href="https://www.example.com/">
 <link rel="prefetch" href="https://www.example.com/">
-<link rel="prerender" href="http://example.com/">
+
 <link rel="preload" href="image.png" as="image">
-<!-- More info: https://css-tricks.com/prefetching-preloading-prebrowsing/ -->
 ```
 
-**[⬆ back to top](#table-of-contents)**
+**Note:** The [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) (`manifest.json`) is the recommended, cross-platform way to declare installable web app properties — including `name`, `icons`, `theme_color`, and `display` mode — in a single file, instead of relying on multiple platform-specific `<meta>` tags.
 
-## Favicons
+- 📖 [Link Relations](https://www.iana.org/assignments/link-relations/link-relations.xhtml)
+- 📖 [Web App Manifest (MDN)](https://developer.mozilla.org/en-US/docs/Web/Manifest)
 
-``` html
+## Scripts
+
+```html
+<!--
+  Scripts: place <script> tags at the end of <body> when possible.
+  The following attributes control loading behavior when placed in <head>:
+-->
+
+<!-- Blocks HTML parsing and content rendering until the script is fetched and executed -->
+<script src="script.js"></script>
+
+<!-- The script will be fetched in parallel with parsing and executed as soon as it is available (before parsing completes) -->
+<script async src="script.js"></script>
+
+<!-- The script will be fetched in parallel with parsing and executed when the page has finished parsing -->
+<script defer src="script.js"></script>
+
+<!-- async takes precedence in modern browsers; defer acts as a fallback for older browsers that don't support async -->
+<script async defer src="script.js"></script>
+
+<!-- Inline script -->
+<script>
+  // function(s) go here
+</script>
+
+<!-- Subresource Integrity (SRI): use the integrity attribute to verify that the fetched resource has been delivered without unexpected manipulation -->
+<script src="https://example.com/script.js" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"></script>
+```
+
+- 📖 [async vs defer attributes](https://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html)
+- 📖 [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)
+
+## Icons
+
+```html
 <!-- For IE 10 and below -->
 <!-- Place favicon.ico in the root directory - no tag necessary -->
 
-<!-- For IE 11, Chrome, Firefox, Safari, Opera -->
-<link rel="icon" type="image/png" sizes="16x16" href="/path/to/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/path/to/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/path/to/favicon-96x96.png">
+<!-- Icon in the highest resolution we need it for -->
+<link rel="icon" sizes="192x192" href="/path/to/icon.png">
+
+<!-- Apple Touch Icon (reuse 192px icon.png) -->
+<link rel="apple-touch-icon" href="/path/to/apple-touch-icon.png">
 ```
 
 - 📖 [All About Favicons (And Touch Icons)](https://bitsofco.de/all-about-favicons-and-touch-icons/)
 - 📖 [Favicon Cheat Sheet](https://github.com/audreyr/favicon-cheat-sheet)
-
-**[⬆ back to top](#table-of-contents)**
+- 📖 [Icons & Browser Colors](https://developers.google.com/web/fundamentals/design-and-ux/browser-customization/)
 
 ## Social
 
-### Facebook Open Graph
+### Open Graph
 
-``` html
-<meta property="fb:app_id" content="123456789">
-<meta property="og:url" content="http://example.com/page.html">
+> The [Open Graph protocol](https://ogp.me/) is the de facto standard for controlling how your content appears when shared on social platforms. Originally created by Facebook, it's now consumed by most major platforms — including LinkedIn, X (as a fallback when Twitter Card tags are absent), Discord, Slack, iMessage, Mastodon, Bluesky, and WhatsApp.
+
+```html
+<meta property="og:url" content="https://example.com/page.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Content Title">
-<meta property="og:image" content="http://example.com/image.jpg">
+<meta property="og:image" content="https://example.com/image.jpg">
+<meta property="og:image:alt" content="A description of what is in the image (not a caption)">
 <meta property="og:description" content="Description Here">
 <meta property="og:site_name" content="Site Name">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="">
 ```
 
-- 📖 [Facebook Open Graph Markup](https://developers.facebook.com/docs/sharing/webmasters#markup)
-- 📖 [Open Graph protocol](http://ogp.me/)
+- 📖 [Open Graph protocol](https://ogp.me/)
+- 🛠 Test your page with the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) or the [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/)
 
-### Twitter Card
+### Schema.org
 
-``` html
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@site_account">
-<meta name="twitter:creator" content="@individual_account">
-<meta name="twitter:url" content="http://example.com/page.html">
-<meta name="twitter:title" content="Content Title">
-<meta name="twitter:description" content="Content description less than 200 characters">
-<meta name="twitter:image" content="http://example.com/image.jpg">
+```html
+<html lang="" itemscope itemtype="https://schema.org/Article">
+    <head>
+      <link rel="author" href="">
+      <link rel="publisher" href="">
+      <meta itemprop="name" content="Content Title">
+      <meta itemprop="description" content="Content description less than 200 characters">
+      <meta itemprop="image" content="https://example.com/image.jpg">
 ```
 
-- 📖 [Getting started with cards — Twitter Developers](https://dev.twitter.com/cards/getting-started)
-- 🛠 [Twitter Card Validator](https://cards-dev.twitter.com/validator)
+**Note:** These meta tags require the `itemscope` and `itemtype` attributes to be added to the `<html>` tag.
 
-### Google+ / Schema.org
+- 📖 [Getting Started - schema.org](https://schema.org/docs/gs.html)
+- 🛠 Test your page with the [Rich Results Test](https://search.google.com/test/rich-results)
 
-``` html
-<link href="https://plus.google.com/+YourPage" rel="publisher">
-<meta itemprop="name" content="Content Title">
-<meta itemprop="description" content="Content description less than 200 characters">
-<meta itemprop="image" content="http://example.com/image.jpg">
+### Google JSON-LD Schema
+
+The following is used by Google to help provide your site with a knowledge graph result when someone Googles you (this is the pane to the right of the search results that typically appears for larger brands):
+
+```html
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": "yourbrand.com",
+    "url": "https://www.yourbrand.com/",
+    "logo": "https://www.yourbrand.com/logo.png",
+    "sameAs": [
+      "https://www.facebook.com/yourbrand",
+      "https://twitter.com/yourbrand",
+      "https://uk.pinterest.com/yourbrand/",
+      "https://www.instagram.com/yourbrand/",
+      "https://www.linkedin.com/company/yourbrand-com"
+    ]
+  }
+</script>
 ```
 
 ### Pinterest
 
-Pinterest lets you prevent people from saving things from your website, according [to their help center](https://help.pinterest.com/en/articles/prevent-people-saving-things-pinterest-your-site). The `description` is optional.
+Pinterest lets you prevent people from saving things from your website, according [to their help center](https://help.pinterest.com/en/business/article/prevent-saves-to-pinterest-from-your-site). The `description` is optional.
 
-``` html
+```html
 <meta name="pinterest" content="nopin" description="Sorry, you can't save from my website!">
 ```
 
-### Facebook Instant Articles
-
-``` html
-<meta charset="utf-8">
-<meta property="op:markup_version" content="v1.0">
-
-<!-- The URL of the web version of your article -->
-<link rel="canonical" href="http://example.com/article.html">
-
-<!-- The style to be used for this article -->
-<meta property="fb:article_style" content="myarticlestyle">
-```
-
-- 📖 [Creating Articles - Instant Articles](https://developers.facebook.com/docs/instant-articles/guides/articlecreate)
-- 📖 [Code Samples - Instant Articles](https://developers.facebook.com/docs/instant-articles/reference)
-
 ### OEmbed
 
-``` html
+```html
 <link rel="alternate" type="application/json+oembed"
-  href="http://example.com/services/oembed?url=http%3A%2F%2Fexample.com%2Ffoo%2F&amp;format=json"
+  href="https://example.com/services/oembed?url=http%3A%2F%2Fexample.com%2Ffoo%2F&amp;format=json"
   title="oEmbed Profile: JSON">
 <link rel="alternate" type="text/xml+oembed"
-  href="http://example.com/services/oembed?url=http%3A%2F%2Fexample.com%2Ffoo%2F&amp;format=xml"
+  href="https://example.com/services/oembed?url=http%3A%2F%2Fexample.com%2Ffoo%2F&amp;format=xml"
   title="oEmbed Profile: XML">
 ```
 
-- 📖 [oEmbed format](http://oembed.com/)
+- 📖 [oEmbed format](https://oembed.com/)
 
-**[⬆ back to top](#table-of-contents)**
+### QQ/Wechat
+
+Users share web pages to qq wechat will have a formatted message
+
+```html
+<meta itemprop="name" content="share title">
+<meta itemprop="image" content="http://imgcache.qq.com/qqshow/ac/v4/global/logo.png">
+<meta name="description" itemprop="description" content="share content">
+```
+
+- 📖 [Code Format Docs](http://open.mobile.qq.com/api/mqq/index#api:setShareInfo)
+
+### Dublin Core
+
+[Dublin Core](https://www.dublincore.org/) is a metadata vocabulary standardized as [ISO 15836](https://www.iso.org/standard/71339.html) and maintained by the Dublin Core Metadata Initiative (DCMI). It defines fifteen core elements for describing resources and is widely used in digital libraries, institutional repositories, academic publishing, and government portals. To use Dublin Core in HTML, declare the DC namespace and then add the desired elements as `<meta>` tags with a `DC.` prefix.
+
+```html
+<!-- Declare the Dublin Core namespace -->
+<link rel="schema.DC" href="https://purl.org/dc/elements/1.1/">
+
+<meta name="DC.title" content="Page Title">
+<meta name="DC.creator" content="Author Name">
+<meta name="DC.subject" content="Keywords; Topics">
+<meta name="DC.description" content="A brief description of the page content">
+<meta name="DC.publisher" content="Publisher Name">
+<meta name="DC.contributor" content="Contributor Name">
+<meta name="DC.date" content="YYYY-MM-DD">
+<meta name="DC.type" content="Text">
+<meta name="DC.format" content="text/html">
+<meta name="DC.identifier" content="https://example.com/page.html">
+<meta name="DC.source" content="https://example.com/original-source">
+<meta name="DC.language" content="en">
+<meta name="DC.relation" content="https://example.com/related">
+<meta name="DC.coverage" content="Spatial or temporal coverage">
+<meta name="DC.rights" content="Copyright Owner Name">
+```
+
+- 📖 [Dublin Core Metadata Element Set](https://www.dublincore.org/specifications/dublin-core/dces/)
+- 📖 [Using Dublin Core in HTML](https://www.dublincore.org/specifications/dublin-core/dcq-html/)
+
+### Fediverse
+
+Some Fediverse software such as Mastodon allow you to put your Fediverse handle in a meta tag which will show up in embeds to your website. In addition to the tag you will also need to add your domain to the list of allowed websites in "Settings -> Public profile -> Verification -> Author attribution" (for Mastodon).
+
+```html
+<meta name="fediverse:creator" content="@handle@example.org">
+```
 
 ## Browsers / Platforms
 
 ### Apple iOS
 
-``` html
+```html
 <!-- Smart App Banner -->
 <meta name="apple-itunes-app" content="app-id=APP_ID,affiliate-data=AFFILIATE_ID,app-argument=SOME_TEXT">
 
 <!-- Disable automatic detection and formatting of possible phone numbers -->
 <meta name="format-detection" content="telephone=no">
 
-<!-- Add to Home Screen -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="App Title">
-
-<!-- Touch Icons -->
-<!-- In most cases, one 180×180px touch icon in the head is enough -->
+<!-- Launch Icon (180x180px or larger) -->
 <link rel="apple-touch-icon" href="/path/to/apple-touch-icon.png">
 
-<!-- Startup Image ( Deprecated ) -->
-<link rel="apple-touch-startup-image" href="/path/to/startup.png">
+<!-- Launch Screen Image -->
+<link rel="apple-touch-startup-image" href="/path/to/launch.png">
+
+<!-- Launch Icon Title -->
+<meta name="apple-mobile-web-app-title" content="App Title">
+
+<!-- Enable standalone (full-screen) mode -->
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Status bar appearance (has no effect unless standalone mode is enabled) -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<!-- Viewport fit for notched phones (iPhone X and later); add viewport-fit=cover to your existing viewport meta tag -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <!-- iOS app deep linking -->
 <meta name="apple-itunes-app" content="app-id=APP-ID, app-argument=http/url-sample.com">
 <link rel="alternate" href="ios-app://APP-ID/http/url-sample.com">
 ```
 
-- 📖 [Apple Meta Tags](https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html)
+- 📖 [Configuring Web Applications](https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html)
 
-### Apple Safari
-
-```html
-<!-- Pinned Site -->
-<link rel="mask-icon" href="/path/to/icon.svg" color="red">
-```
+**Note:** Properties such as app title (`apple-mobile-web-app-title`), standalone/display mode, and app icons (`apple-touch-icon`) are more reliably and portably configured using the [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) (`<link rel="manifest">`), which is the recommended approach for Progressive Web Apps (PWAs). The Apple-specific meta tags remain useful as a fallback for older iOS versions.
 
 ### Google Android
 
-``` html
+```html
 <meta name="theme-color" content="#E64545">
 
 <!-- Add to home screen -->
@@ -389,142 +527,93 @@ Pinterest lets you prevent people from saving things from your website, accordin
 <link rel="alternate" href="android-app://package-name/http/url-sample.com">
 ```
 
+**Note:** `theme-color` and the "add to home screen" / standalone behavior are better defined using the [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) (`<link rel="manifest">`). The `theme-color` meta tag can still serve as a fallback for browsers that do not yet support the manifest `theme_color` property.
+
 ### Google Chrome
 
-``` html
+```html
 <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/APP_ID">
 
 <!-- Disable translation prompt -->
 <meta name="google" content="notranslate">
 ```
 
-### Google Chrome Mobile (Android Only)
-
-Since Chrome 31, you can set up your web app to "app mode" like Safari.
-
-``` html
-<!-- Link to a manifest and define the manifest metadata. -->
-<!-- The example of manifest.json could be found in the link below. -->
-<link rel="manifest" href="manifest.json">
-
-<!-- Define your web page as a web app -->
-<meta name="mobile-web-app-capable" content="yes">
-
-<!-- Homescreen Icon  -->
-<link rel="icon" sizes="192x192" href="/path/to/highres-icon.png">
-```
-
-- 📖 [Add to Homescreen - Google Chrome](https://developer.chrome.com/multidevice/android/installtohomescreen)
-
-### Microsoft Internet Explorer
-
-``` html
-<meta http-equiv="x-ua-compatible" content="ie=edge">
-<meta name="skype_toolbar" content="skype_toolbar_parser_compatible">
-
-<!-- IE10: Disable link highlighting upon tap (https://blogs.windows.com/buildingapps/2012/11/15/adapting-your-webkit-optimized-site-for-internet-explorer-10/) -->
-<meta name="msapplication-tap-highlight" content="no">
-
-<!-- Pinned sites (https://msdn.microsoft.com/en-us/library/dn255024(v=vs.85).aspx) -->
-<meta name="application-name" content="Sample Title">
-<meta name="msapplication-tooltip" content="A description of what this site does.">
-<meta name="msapplication-starturl" content="http://example.com/index.html?pinned=true">
-<meta name="msapplication-navbutton-color" content="#FF3300">
-<meta name="msapplication-window" content="width=800;height=600">
-<meta name="msapplication-task" content="name=Task 1;action-uri=http://host/Page1.html;icon-uri=http://host/icon1.ico">
-<meta name="msapplication-task" content="name=Task 2;action-uri=http://microsoft.com/Page2.html;icon-uri=http://host/icon2.ico">
-<meta name="msapplication-badge" value="frequency=NUMBER_IN_MINUTES;polling-uri=http://example.com/path/to/file.xml">
-<meta name="msapplication-TileColor" content="#FF3300">
-<meta name="msapplication-TileImage" content="/path/to/tileimage.jpg">
-
-<meta name="msapplication-config" content="http://example.com/browserconfig.xml">
-<meta name="msapplication-notification" content="frequency=60;polling-uri=http://example.com/livetile;polling-uri2=http://example.com/livetile2">
-<meta name="msapplication-task-separator" content="1">
-```
-
-**[⬆ back to top](#table-of-contents)**
-
-## App Links
-
-``` html
-<!-- iOS -->
-<meta property="al:ios:url" content="applinks://docs">
-<meta property="al:ios:app_store_id" content="12345">
-<meta property="al:ios:app_name" content="App Links">
-<!-- Android -->
-<meta property="al:android:url" content="applinks://docs">
-<meta property="al:android:app_name" content="App Links">
-<meta property="al:android:package" content="org.applinks">
-<!-- Web Fallback -->
-<meta property="al:web:url" content="http://applinks.org/documentation">
-```
-
-- 📖 [App Links](http://applinks.org/documentation/)
-
-**[⬆ back to top](#table-of-contents)**
-
 ## Browsers (Chinese)
 
 ### 360 Browser
 
-``` html
+```html
 <!-- Select rendering engine order -->
 <meta name="renderer" content="webkit|ie-comp|ie-stand">
 ```
 
 ### QQ Mobile Browser
 
-``` html
+```html
 <!-- Locks the screen into the specified orientation -->
 <meta name="x5-orientation" content="landscape/portrait">
-<!-- Display this page in fullscreen -->
+
+<!-- Display this document in fullscreen -->
 <meta name="x5-fullscreen" content="true">
-<!-- Page will be displayed in "application mode" (full screen, etc.) -->
+
+<!-- Document will be displayed in "application mode" (fullscreen, etc.) -->
 <meta name="x5-page-mode" content="app">
 ```
 
 ### UC Mobile Browser
 
-``` html
+```html
 <!-- Locks the screen into the specified orientation -->
 <meta name="screen-orientation" content="landscape/portrait">
-<!-- Display this page in fullscreen -->
+
+<!-- Display this document in fullscreen -->
 <meta name="full-screen" content="yes">
+
 <!-- UC browser will display images even if in "text mode" -->
 <meta name="imagemode" content="force">
-<!-- Page will be displayed in "application mode"(full screen, forbidding gesture, etc.) -->
+
+<!-- Document will be displayed in "application mode"(fullscreen, forbidding gesture, etc.) -->
 <meta name="browsermode" content="application">
-<!-- Disabled the UC browser's "night mode" in this page -->
+
+<!-- Disabled the UC browser's "night mode" for this document -->
 <meta name="nightmode" content="disable">
-<!-- Simplify the page to reduce data transfer -->
+
+<!-- Simplify the document to reduce data transfer -->
 <meta name="layoutmode" content="fitscreen">
-<!-- Disable the UC browser's feature of "scaling font up when there are many words in this page" -->
+
+<!-- Disable the UC browser's feature of "scaling font up when there are many words in this document" -->
 <meta name="wap-font-scale" content="no">
 ```
 
-- 📖 [UC Browser Docs](http://www.uc.cn/download/UCBrowser_U3_API.doc)
+- 📖 [UC Browser Docs](https://www.uc.cn/download/UCBrowser_U3_API.doc)
 
-**[⬆ back to top](#table-of-contents)**
+## App Links
 
-## Notes
+```html
+<!-- iOS -->
+<meta property="al:ios:url" content="applinks://docs">
+<meta property="al:ios:app_store_id" content="12345">
+<meta property="al:ios:app_name" content="App Links">
 
-### Performance
-Moving the `href` attribute to the beginning of an element improves compression when GZIP is enabled, because the `href` attribute is used in `a`, `base`, and `link` tags.
+<!-- Android -->
+<meta property="al:android:url" content="applinks://docs">
+<meta property="al:android:app_name" content="App Links">
+<meta property="al:android:package" content="org.applinks">
 
-Example:
-
-``` html
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+<!-- Web fall back -->
+<meta property="al:web:url" content="https://applinks.org/documentation">
 ```
 
-**[⬆ back to top](#table-of-contents)**
+- 📖 [App Links](https://developers.facebook.com/docs/applinks)
+
+## Deprecated
+
+For tags and elements that were once part of this guide but are no longer supported (Internet Explorer compatibility, Safari Pinned Tabs, Alexa verification, etc.), see [DEPRECATED.md](./DEPRECATED.md).
 
 ## Other Resources
 
-- 📖 [HTML5 Boilerplate Docs: The HTML](https://github.com/h5bp/html5-boilerplate/blob/master/dist/doc/html.md)
-- 📖 [HTML5 Boilerplate Docs: Extend and customize](https://github.com/h5bp/html5-boilerplate/blob/master/dist/doc/extend.md)
-
-**[⬆ back to top](#table-of-contents)**
+- 📖 [HTML5 Boilerplate Docs: The HTML](https://github.com/h5bp/html5-boilerplate/blob/main/docs/html.md)
+- 📖 [HTML5 Boilerplate Docs: Extend and customize](https://github.com/h5bp/html5-boilerplate/blob/main/docs/extend.md)
 
 ## Related Projects
 
@@ -533,27 +622,27 @@ Example:
 - [head-it](https://github.com/hemanth/head-it) - CLI interface for `HEAD` snippets
 - [vue-head](https://github.com/ktquez/vue-head) - Manipulating the meta information of the `HEAD` tag for Vue.js
 
-**[⬆ back to top](#table-of-contents)**
-
 ## Other Formats
 
 - 📄 [PDF](https://gitprint.com/joshbuchea/HEAD/blob/master/README.md)
 
-**[⬆ back to top](#table-of-contents)**
+## 🌐 Translations
 
-## Translations
+- [Bahasa](https://github.com/rijdz/HEAD)
+- [Bengali](https://github.com/AveyBD/HEAD)
+- [Brazilian Portuguese](https://github.com/Webschool-io/HEAD)
+- [Chinese (Simplified)](https://github.com/Amery2010/HEAD)
+- [German](https://github.com/Shidigital/HEAD)
+- [Italian](https://github.com/Fakkio/HEAD)
+- [Japanese](https://coliss.com/articles/build-websites/operation/work/collection-of-html-head-elements.html)
+- [Korean](https://github.com/Lutece/HEAD)
+- [Malay](https://github.com/shoen1x/HEAD)
+- [Russian/Русский](https://github.com/Konfuze/HEAD)
+- [Spanish](https://github.com/alvaroadlf/HEAD)
+- [Turkish/Türkçe](https://github.com/mkg0/HEAD)
+- [Ukrainian](https://github.com/Shramkoweb/HEAD)
 
-- 🇧🇷 [Brazilian Portuguese](https://github.com/Webschool-io/HEAD)
-- 🇨🇳 [Chinese (Simplified)](https://github.com/Amery2010/HEAD)
-- 🇮🇹 [Italian](https://github.com/Fakkio/HEAD)
-- 🇯🇵 [Japanese](http://coliss.com/articles/build-websites/operation/work/collection-of-html-head-elements.html)
-- 🇰🇷 [Korean](https://github.com/Lutece/HEAD)
-- 🇷🇺 [Russian/Русский](https://github.com/Konfuze/HEAD)
-- 🇹🇷 [Turkish/Türkçe](https://github.com/mkg0/HEAD)
-
-**[⬆ back to top](#table-of-contents)**
-
-## Contributing
+## 🤝 Contributing
 
 **Open an issue or a pull request to suggest changes or additions.**
 
@@ -563,9 +652,11 @@ The **HEAD** repository consists of two branches:
 
 #### 1. `master`
 
-This branch consists of the `README.md` file that is automatically reflected on the [gethead.info](https://gethead.info/) website. All changes to the content of the cheat sheet as such should be directed to this file.
+This branch consists of the `README.md` file that is reflected on the [htmlhead.dev](https://htmlhead.dev/) website. All changes to the content of the guide should be made in this file.
 
 Please follow these steps for pull requests:
+
+{:.list-style-default}
 
 - Modify only one tag, or one related set of tags at a time
 - Use double quotes on attributes
@@ -574,20 +665,34 @@ Please follow these steps for pull requests:
 
 #### 2. `gh-pages`
 
-This branch is responsible for the [gethead.info](https://gethead.info/) website. We use [Jekyll](https://jekyllrb.com/) to deploy the `README.md` Markdown file through [GitHub Pages](https://pages.github.com/). All website related modifications must be directed here.
+This branch is responsible for the [htmlhead.dev](https://htmlhead.dev/) website. We use [Jekyll](https://jekyllrb.com/) to deploy the `README.md` markdown file to [GitHub Pages](https://pages.github.com/). All website related modifications should be made in this branch.
 
-You may want to go through the [Jekyll Docs](https://jekyllrb.com/docs/home/) and understand how Jekyll works before working on this branch.
+You may find it helpful to review the [Jekyll Docs](https://jekyllrb.com/docs/home/) and understand how Jekyll works before working in this branch.
 
-### Contributors
+## 🌟 Contributors
 
-Check out all the super awesome [contributors](https://github.com/joshbuchea/HEAD/graphs/contributors).
+Check out all the super awesome [contributors](https://github.com/joshbuchea/HEAD/graphs/contributors) 🤩
 
-## Author
+## 👤 Author
 
-**[Josh Buchea](http://joshbuchea.com/)**
+**Josh Buchea**
 
-## License
+- GitHub: [@joshbuchea](https://github.com/joshbuchea)
+- Mastodon: [@joshbuchea@hachyderm.io](https://hachyderm.io/@joshbuchea)
+
+## 💛 Support
+
+If this project was helpful for you or your organization, please considering supporting my work directly:
+
+- 💛 [Sponsor me on GitHub](https://github.com/sponsors/joshbuchea)
+- ⭐️ [Star this project on GitHub](https://github.com/joshbuchea/HEAD)
+- 🐙 [Follow me on GitHub](https://github.com/joshbuchea)
+- 🐘 [Follow me on Mastodon](https://hachyderm.io/@joshbuchea)
+
+Everything helps, thanks! 🙏
+
+— Josh
+
+## 📝 License
 
 [![CC0](https://i.creativecommons.org/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
-
-**[⬆ back to top](#table-of-contents)**
